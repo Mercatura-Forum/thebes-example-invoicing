@@ -1,0 +1,28 @@
+@import 'tailwindcss';
+
+/* Ledger design tokens — a calm, document-like palette: ink on warm paper,
+   teal for actions, amber for monetary amounts, with status-colored badges.
+   Deliberately its own identity, distinct from the storefront example. */
+@theme {
+  --color-accent: #0d9488;     /* teal — Memphis sign-in + primary action */
+  --color-ink: #1c1917;        /* near-black ink */
+  --color-ink-soft: #57534e;   /* secondary text */
+  --color-paper: #faf8f4;      /* warm paper — page */
+  --color-surface: #ffffff;    /* cards */
+  --color-line: #e7e2d9;       /* hairlines */
+  --color-teal: #0d9488;
+  --color-teal-ink: #0f5f59;
+  --color-amount: #92400e;     /* amber — monetary figures */
+  --color-danger: #b42318;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --radius-card: 12px;
+}
+
+html, body, #root { height: 100%; }
+body {
+  margin: 0;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
