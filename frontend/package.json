@@ -11,7 +11,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@thebes/sdk": "github:Mercatura-Forum/thebes-sdk#v0.1.1",
+    "@thebes/sdk": "file:vendor/@thebes/sdk",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
   },
