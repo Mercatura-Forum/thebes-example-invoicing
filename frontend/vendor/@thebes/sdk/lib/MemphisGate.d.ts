@@ -1,27 +1,28 @@
 /**
- * MemphisGate — Memphis passkey sign-in as the app's web auth.
+ * MemphisGate — open-demo wrapper with Memphis passkey sign-in on demand.
  *
- * Wrap the app's routes in <MemphisGate appName="…">. Until the visitor signs
- * in with a passkey, the gate shows a sign-in card; once signed in, it renders
- * the app and exposes the session via useAuth() so the header can greet the
- * user and offer sign-out. Memphis (cid 921) provides the human identity +
- * display name; the on-chain caller stays the boundary's persisted browser key.
+ * This is a public demo: anyone can roam the app without signing in. The gate
+ * always renders the app and exposes the Memphis session (guest or signed-in)
+ * via useAuth(). Sign-in is offered in the header (SignOutChip) and prompted
+ * only when a visitor wants a persistent identity. Memphis (cid 921) provides
+ * the human display name; the on-chain caller is the boundary's persisted
+ * browser key either way, so reads and writes work for guests too.
  *
- * This file is identical across every Thebes example — copy it as-is. Only the
- * per-app `--color-accent` token (in index.css) and the appName/tagline props
- * differ, so the gate always looks native to its host app.
+ * Same API as every Thebes example: wrap routes in <MemphisGate>, read the
+ * session via useAuth(), sign in / out via SignOutChip. The accent comes from
+ * the per-app `--color-accent` token (in index.css).
  */
 import { type ReactNode } from 'react';
 import { type MemphisAuth } from './useMemphis.js';
-/** The signed-in Memphis session + sign-out. Throws if used outside the gate. */
+/** The Memphis session (signed in or guest). Throws if used outside the gate. */
 export declare function useAuth(): MemphisAuth;
-export declare function MemphisGate({ appName, tagline, children }: {
-    appName: string;
+export declare function MemphisGate({ children }: {
+    appName?: string;
     tagline?: string;
     children: ReactNode;
 }): import("react").JSX.Element;
-/** Compact "signed in as … · Sign out" chip for app headers. Native-looking;
- *  the accent comes from --color-accent. */
+/** Header auth control: guests get a "Sign in" affordance; signed-in visitors
+ *  see their name and a sign-out link. The accent comes from --color-accent. */
 export declare function SignOutChip({ className }: {
     className?: string;
 }): import("react").JSX.Element;
