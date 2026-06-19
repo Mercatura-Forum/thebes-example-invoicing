@@ -1,4 +1,4 @@
-import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
+import { jsx as _jsx, jsxs as _jsxs, Fragment as _Fragment } from "react/jsx-runtime";
 /**
  * MemphisGate — open-demo wrapper with Memphis passkey sign-in on demand.
  *
@@ -38,9 +38,15 @@ export function SignOutChip({ className = '' }) {
     const [open, setOpen] = useState(false);
     if (auth.signedIn)
         return (_jsxs("span", { className: `inline-flex items-center gap-2 text-xs ${className}`, children: [_jsxs("span", { className: "opacity-60", children: ["Signed in as ", _jsx("b", { style: { color: 'var(--color-accent)' }, children: auth.displayName })] }), _jsx("button", { className: "rounded-md px-2 py-1 font-medium opacity-80 hover:opacity-100", style: { color: 'var(--color-accent)' }, onClick: auth.signOut, children: "Sign out" })] }));
-    const submit = () => { auth.signIn(name.trim() || 'Guest').catch(() => { }); };
+    // Memphis handles look like  <stem>.thebes  — we append ".thebes" so a visitor
+    // only types the stem (3–32 chars, a–z 0–9 -). No bare fallback: an invalid
+    // stem keeps the button disabled instead of failing with a cryptic error.
+    const stem = name.trim().toLowerCase().replace(/\.thebes$/, '');
+    const stemOk = stem.length >= 3 && stem.length <= 32 && /^[a-z0-9-]+$/.test(stem) && !stem.startsWith('-') && !stem.endsWith('-');
+    const handle = `${stem}.thebes`;
+    const submit = () => { if (stemOk && !auth.busy)
+        auth.signIn(handle).catch(() => { }); };
     if (!open)
         return (_jsx("button", { className: `rounded-lg px-3 py-1.5 text-xs font-medium ${className}`, style: { color: 'var(--color-accent)', boxShadow: '0 0 0 1px color-mix(in srgb, var(--color-accent) 40%, transparent)' }, onClick: () => setOpen(true), children: "Sign in" }));
-    return (_jsxs("span", { className: `inline-flex items-center gap-2 ${className}`, children: [_jsx("input", { className: "rounded-lg border border-black/10 bg-black/[0.03] px-2.5 py-1.5 text-sm outline-none", style: { borderColor: 'color-mix(in srgb, var(--color-accent) 30%, transparent)' }, placeholder: "Your name", value: name, autoFocus: true, onChange: (e) => setName(e.target.value), onKeyDown: (e) => e.key === 'Enter' && submit() }), _jsx("button", { className: "rounded-lg px-3 py-1.5 text-sm font-semibold text-white transition hover:brightness-110 disabled:opacity-50", style: { background: 'var(--color-accent)' }, onClick: submit, disabled: auth.busy, children: auth.busy ? 'Signing in…' : 'Sign in with passkey' }), auth.error && _jsx("span", { className: "rounded-lg bg-red-50 px-2.5 py-1.5 text-xs text-red-700", children: auth.error })] }));
+    return (_jsxs("span", { className: `inline-flex flex-col items-stretch gap-1 ${className}`, children: [_jsxs("span", { className: "inline-flex items-center gap-2", children: [_jsx("input", { className: "rounded-lg border border-black/10 bg-black/[0.03] px-2.5 py-1.5 text-sm outline-none", style: { borderColor: 'color-mix(in srgb, var(--color-accent) 30%, transparent)' }, placeholder: "yourname", value: name, autoFocus: true, "aria-label": "Thebes handle", onChange: (e) => setName(e.target.value), onKeyDown: (e) => e.key === 'Enter' && submit() }), _jsx("button", { className: "rounded-lg px-3 py-1.5 text-sm font-semibold text-white transition hover:brightness-110 disabled:opacity-50", style: { background: 'var(--color-accent)' }, onClick: submit, disabled: auth.busy || !stemOk, children: auth.busy ? 'Signing in…' : 'Sign in with passkey' })] }), _jsxs("span", { style: { fontSize: '11px', opacity: 0.7 }, children: [stem ? _jsxs(_Fragment, { children: ["\u2192 becomes ", _jsx("b", { children: handle })] }) : 'pick a handle — we add .thebes', " \u00B7 3\u201332 \u00B7 a\u2013z 0\u20139 -"] }), auth.error && _jsx("span", { className: "rounded-lg bg-red-50 px-2.5 py-1.5 text-xs text-red-700", children: auth.error })] }));
 }
-//# sourceMappingURL=MemphisGate.js.map
