@@ -59,7 +59,7 @@ body {
 
 /* Rubber stamps. */
 .stamp {
-  position: absolute; top: 1.4rem; right: 1.6rem;
+  position: absolute; top: 5.2rem; right: 2.2rem;
   transform: rotate(8deg);
   border: 3px solid currentColor; border-radius: 6px;
   padding: 0.15rem 0.7rem;
