@@ -1,12 +1,21 @@
 # thebes-example-invoicing
 
-On-chain invoicing built on [Thebes Protocol](https://github.com/Mercatura-Forum/Thebes-Protocol-):
-a Motoko backend over the shared [`thebes-lib`](https://github.com/Mercatura-Forum/thebes-lib)
-`Invoices` module, and a React frontend served as certified assets. Create
-invoices from line items, move them through a guarded `draft → issued → paid`
-(or `void`) lifecycle, and read them back from chain state — totals are always
-recomputed on-chain, never trusted from the client. It is a self-contained
-example of the full shape of a Thebes application.
+Folio — on-chain invoicing with a settlement ledger, built on
+[Thebes Protocol](https://github.com/Mercatura-Forum/Thebes-Protocol-): a Motoko
+backend over the shared [`thebes-lib`](https://github.com/Mercatura-Forum/thebes-lib)
+`Invoices` module, and a document-first React frontend served as certified assets.
+
+The property this example proves: **an invoice settles exactly — never over,
+never under, never out of order.** Totals are recomputed on-chain from line
+items (a client can never supply a total); payments accumulate against an
+issued invoice and can never exceed it; the payment that lands exactly on the
+total flips the invoice to `paid` in the same atomic step; an invoice that has
+taken money can no longer be voided. Issuing takes a due date and receivables
+age against it (current / 1–30 / 31–60 / 60+ days). A **public oracle**
+(`invariantReportView`) re-proves five laws on every read, and the seal carries
+the conservation: billed = collected + outstanding.
+
+Live demo: <https://memphis.mercaturaforum.com/_/raw/128363932940845/index.html>
 
 ## Architecture
 
@@ -33,14 +42,15 @@ deploy time (see [Deploy](#deploy)).
 
 | Method | Kind | Purpose |
 | --- | --- | --- |
-| `createInvoice` / `createIssued` | update | Open an invoice from parallel line-item arrays; totals recomputed on-chain. |
-| `issueOrTrap` | update | `draft → issued` (issuer only; traps on a failed guard). |
-| `payOrTrap` | update | `issued → paid` (issuer or recipient). |
-| `voidOrTrap` | update | `draft`/`issued → void` (issuer only; a paid invoice cannot be voided). |
-| `myInvoicesView` / `allInvoicesView` | query | Invoices as flat records the frontend decodes directly. |
-| `getInvoice` / `getLineItems` | query | Full invoice (with audit trail) / its line items. |
+| `createInvoice` | update | Open a draft from parallel line-item arrays; totals recomputed on-chain. |
+| `issueOrTrap` | update | `draft → issued` with a due date (issuer only; traps on a failed guard). |
+| `recordPaymentOrTrap` | update | Record a (possibly partial) payment — recipient only, never above the total; the exact-settling payment flips the invoice to `paid` atomically. |
+| `voidOrTrap` | update | Void an unpaid invoice — refused once any money has been collected. |
+| `myInvoicesView` / `getLineItems` / `invoiceTrailView` | query | Flat invoice records (with paid-so-far and due dates), line items, and the merged audit-trail + payment history. |
+| `agingView` | query | The caller's receivables by days overdue. |
+| `invariantReportView` / `invoicingSealView` | query | The public five-law oracle and the billed = collected + outstanding seal. |
 | `claimOwner` / `setPaused` | update | Ownership and pause surface (from `thebes-lib`'s `Admin`). |
-| `seedDemo` | update | Seed a couple of demo invoices. |
+| `seedDemo` | update | Seed a lived-in demo book: settled via two partials, part-paid, 40-days overdue, and a draft. |
 
 Amounts are in e8s (8 decimals); tax is in basis points (10% = 1000 bps). Every
 lifecycle transition appends to an immutable on-chain audit trail.
