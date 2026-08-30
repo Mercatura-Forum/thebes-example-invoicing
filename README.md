@@ -1,7 +1,7 @@
 # thebes-example-invoicing
 
 Folio — on-chain invoicing with a settlement ledger, built on
-[Thebes Protocol](https://github.com/Mercatura-Forum/Thebes-Protocol-): a Motoko
+[Thebes Protocol](https://thebesprotocol.com): a Motoko
 backend over the shared [`thebes-lib`](https://github.com/Mercatura-Forum/thebes-lib)
 `Invoices` module, and a document-first React frontend served as certified assets.
 
