@@ -8,7 +8,7 @@ declare global {
 }
 
 export const INVOICING_CID: number =
-  (typeof window !== 'undefined' && window.INVOICING_CID) || 0
+  (typeof window !== 'undefined' && window.INVOICING_CID) || 237703272547546
 
 /** e8s (8 decimals) → display string, e.g. 440000000n → "4.40". */
 export function formatE8s(e8s: bigint | number): string {
