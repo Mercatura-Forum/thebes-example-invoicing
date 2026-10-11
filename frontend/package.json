@@ -3,9 +3,9 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "Thebes example dapp — on-chain invoicing over the shared thebes-lib Invoices module.",
+  "description": "Thebes example dapp \u2014 on-chain invoicing over the shared thebes-lib Invoices module.",
   "scripts": {
-    "sync-sdk": "mkdir -p public && cp node_modules/@thebes/sdk/runtime/boundary.js node_modules/@thebes/sdk/runtime/passkey.js public/",
+    "sync-sdk": "mkdir -p public && cp node_modules/@thebes/sdk/runtime/boundary.js node_modules/@thebes/sdk/runtime/passkey.js node_modules/@thebes/sdk/runtime/recovery.js public/",
     "dev": "npm run sync-sdk && vite",
     "build": "npm run sync-sdk && tsc -b && vite build",
     "preview": "vite preview"
